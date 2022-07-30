@@ -1,4 +1,9 @@
 import sys
+
+from core.raft import RAFT
+from core.utils import flow_viz
+from core.utils.utils import InputPadder
+
 sys.path.append('core')
 
 import argparse
@@ -9,9 +14,9 @@ import numpy as np
 import torch
 from PIL import Image
 
-from raft import RAFT
-from utils import flow_viz
-from utils.utils import InputPadder
+#from raft import RAFT
+#from utils import flow_viz
+#from utils.utils import InputPadder
 
 
 

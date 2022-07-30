@@ -1,8 +1,14 @@
 *.pyc
 *.egg-info
+*.onnx
+*.engine
 dist
 datasets
 pytorch_env
 models
 build
 correlation.egg-info
+.idea
+checkpoints/
+post-process/
+runs/
