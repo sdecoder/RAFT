@@ -3,12 +3,12 @@
 *.onnx
 *.engine
 dist
-datasets
+core/utils/datasets
 pytorch_env
 models
 build
 correlation.egg-info
 .idea
 checkpoints/
-post-process/
+post-process/polygraphy_capability_dumps/
 runs/
