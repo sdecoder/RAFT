@@ -28,7 +28,7 @@ python demo.py --model=models/raft-things.pth --path=demo-frames
 ```
 
 ## Required Data
-To evaluate/train RAFT, you will need to download the required datasets. 
+To evaluate/train RAFT, you will need to download the required datasets.
 * [FlyingChairs](https://lmb.informatik.uni-freiburg.de/resources/datasets/FlyingChairs.en.html#flyingchairs)
 * [FlyingThings3D](https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html)
 * [Sintel](http://sintel.is.tue.mpg.de/)
@@ -78,3 +78,26 @@ You can optionally use our alternate (efficent) implementation by compiling the 
 cd alt_cuda_corr && python setup.py install && cd ..
 ```
 and running `demo.py` and `evaluate.py` with the `--alternate_corr` flag Note, this implementation is somewhat slower than all-pairs, but uses significantly less GPU memory during the forward pass.
+
+## TensorRT inference
+
+* Once the training is done, the model can be exported to the ONNX file first.
+* The ONNX file can NOT be converted to TensorRT engine file directly due to lacking of support for GridSampler operation.
+
+### Solution:
+1. Go to: https://github.com/NVIDIA/trt-samples-for-hackathon-cn/tree/master/old/plugins
+2. Build the GridSamplerPlugin.cpp as Linux .so file:
+```shell
+nvcc -g -Xcompiler -fPIC -shared -o GridSamplePlugin.so gridSamplerPlugin.cpp -lnvinfer -lcudnn
+```
+3. Load the so file during the engine build:
+```python
+import ctypes
+trt.init_libnvinfer_plugins(TRT_LOGGER, '')
+ctypes.CDLL(so_file)
+```
+4. Follow the generic TensorRT conversion for engine generation.
+5. The command line way would be:
+```shell
+trtexec --buildOnly --verbose --onnx=raft-simp.onnx --saveEngine=raft-simp.engine --plugins=GridSamplePlugin.so --workspace=4096
+```
